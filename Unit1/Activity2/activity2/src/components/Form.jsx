@@ -41,9 +41,9 @@ export default function Form() {
     return (
         <form>
             <InputField label="Name" placeholder="Enter your name..." value={form.name} name="name" onChange={handleChange} />
-
+            <br />
             <InputField label="Email" placeholder="Enter your email..." value={form.email} name="email" onChange={handleChange} />
-            
+            <br />
             <InputField label="Phone Number" placeholder="Enter your phone number..." value={form.phoneNumber} name="phoneNumber" onChange={handleChange} />
 
             <Rating name="rating" value={form.rating} onChange={(e, newValue) => {setForm((prev) => ({ ...prev, rating: newValue}));}} />
