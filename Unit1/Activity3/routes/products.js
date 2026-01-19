@@ -120,3 +120,5 @@ router.delete("/:id", (req, res) => {
     const deleted = products.splice(index, 1)[0];
     res.json({ message: "Product deleted", deleted });
 });
+
+module.exports = router;
