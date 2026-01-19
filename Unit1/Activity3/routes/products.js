@@ -81,11 +81,11 @@ const products = [
 
 // TODO: Implement GET, GET/:id, POST, DELETE for /products
 
-router.get("/products", (req, res) => {
+router.get("/", (req, res) => {
     res.json(products);
 });
 
-router.get("/products/:id", (req, res) => {
+router.get("/:id", (req, res) => {
     const id = Number(req.params.id);
     const product = products.find((p) => p.id === id);
 
@@ -96,7 +96,7 @@ router.get("/products/:id", (req, res) => {
     res.json(product);
 });
 
-router.post("/products", (req, res) => {
+router.post("/", (req, res) => {
     const {title, price, condition, category, description, seller, location } = req.body;
 
     if( !title || !price || !condition || !description || !seller || !location) {
@@ -107,4 +107,16 @@ router.post("/products", (req, res) => {
     products.push(newProduct);
 
     res.status(201).json(newProduct);
+});
+
+router.delete("/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const index = products.findIndex((p) => p.id === id);
+
+    if(index === -1) {
+        return res.status(404).json({ error: "Product not found "});
+    }
+
+    const deleted = products.splice(index, 1)[0];
+    res.json({ message: "Product deleted", deleted });
 });
