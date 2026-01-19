@@ -11,10 +11,6 @@ app.use("/users", usersRouter);
 const productsRouter = require("./routes/products");
 app.use("/products", productsRouter);
 
-productsRouter.get("/", (req, res) => {
-    res.json(products)
-});
-
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

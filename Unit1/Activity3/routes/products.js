@@ -80,3 +80,31 @@ const products = [
 
 
 // TODO: Implement GET, GET/:id, POST, DELETE for /products
+
+router.get("/products", (req, res) => {
+    res.json(products);
+});
+
+router.get("/products/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const product = products.find((p) => p.id === id);
+
+    if(!product) {
+        return res.status(404).json({error: "Product not found"});
+    }
+
+    res.json(product);
+});
+
+router.post("/products", (req, res) => {
+    const {title, price, condition, category, description, seller, location } = req.body;
+
+    if( !title || !price || !condition || !description || !seller || !location) {
+        return res.status(400).json({ error: "title, price, condition, description, seller, and location are required."});
+    }
+
+    const newProduct = {id: nextId++, title, price, condition, category, description, seller, location };
+    products.push(newProduct);
+
+    res.status(201).json(newProduct);
+});
