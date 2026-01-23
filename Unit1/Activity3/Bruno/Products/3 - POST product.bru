@@ -15,7 +15,7 @@ body:json {
           "id": 1,
           "title": "iPad (9th Gen) 64GB Wi-Fi",
           "price": 220,
-          "condition": "good", // new | like_new | good | fair | parts
+          "condition": "good", 
           "category": "Electronics",
           "description": "Includes case + charger. Minor scuffs on back, screen is clean.",
           "seller": "Ethan",
@@ -26,9 +26,9 @@ body:json {
       }
 }
 
-tests {
-  const body = res.getBody();         
-  bru.setEnvVar("createdUserId", body.id);
+assert {
+  res.status: eq 201
+  res.body.title: eq "iPad (9th Gen) 64GB Wi-Fi"
 }
 
 settings {

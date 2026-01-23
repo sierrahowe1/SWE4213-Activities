@@ -1,0 +1,21 @@
+meta {
+  name: 4 - DELETE product
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:3000/products/3
+  body: json
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.message: eq "Product deleted"
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

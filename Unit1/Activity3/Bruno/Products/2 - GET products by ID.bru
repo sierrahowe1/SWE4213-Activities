@@ -12,11 +12,11 @@ get {
 
 assert {
   res.status: eq 200
-  res.: eq 
+  res.body.id: eq 1
 }
 
 tests {
-  expect(res.status).to.equal(200);
+  
   expect(res.body).to.be.an('object');
   
   
