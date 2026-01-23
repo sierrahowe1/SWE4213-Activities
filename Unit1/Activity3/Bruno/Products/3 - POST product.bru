@@ -1,0 +1,37 @@
+meta {
+  name: 3 - POST product
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/products
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+          "id": 1,
+          "title": "iPad (9th Gen) 64GB Wi-Fi",
+          "price": 220,
+          "condition": "good", // new | like_new | good | fair | parts
+          "category": "Electronics",
+          "description": "Includes case + charger. Minor scuffs on back, screen is clean.",
+          "seller": "Ethan",
+          "location": "Fredericton, NB",
+          "isSold": false,
+          "createdAt": "2026-01-05"
+  
+      }
+}
+
+tests {
+  const body = res.getBody();         
+  bru.setEnvVar("createdUserId", body.id);
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
