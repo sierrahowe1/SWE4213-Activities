@@ -1,0 +1,24 @@
+meta {
+  name: 1 - GET Products - Not Logged In
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/products/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer randomincorrecttoken
+}
+
+assert {
+  res.status: eq 401
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

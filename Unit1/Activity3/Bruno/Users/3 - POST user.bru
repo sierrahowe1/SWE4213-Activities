@@ -1,0 +1,26 @@
+meta {
+  name: 3 - POST user
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/users
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {"id": 3, "name": "Test User", "email": "test@test.com"}
+  
+}
+
+tests {
+  const body = res.getBody();         
+  bru.setEnvVar("createdUserId", body.id);
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

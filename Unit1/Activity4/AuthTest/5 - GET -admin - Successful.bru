@@ -1,0 +1,20 @@
+meta {
+  name: 5 - GET /admin - Successful
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/admin
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

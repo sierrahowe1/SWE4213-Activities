@@ -1,0 +1,16 @@
+meta {
+  name: 4 - DELETE users
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/users/{{createdUserId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
