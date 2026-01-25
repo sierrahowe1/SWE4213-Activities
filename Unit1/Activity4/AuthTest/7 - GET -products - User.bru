@@ -5,13 +5,17 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/products
+  url: http://localhost:3000/products
   body: none
   auth: inherit
 }
 
 headers {
   Authorization: Bearer {{token}}
+}
+
+vars:pre-request {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NjkzNjgwMDYsImV4cCI6MTc2OTM3MTYwNn0.CyGJ-L_gaAT12XmMklMsp79-V2592rHA3Q8lOzsgdRE
 }
 
 assert {

@@ -5,13 +5,17 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/admin
+  url: http://localhost:3000/admin
   body: none
   auth: inherit
 }
 
 headers {
   Authorization: Bearer {{token}}
+}
+
+vars:pre-request {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzY5MzY3NjA4LCJleHAiOjE3NjkzNzEyMDh9.vpalYlLS3UL7pr8u5a9U6t5pWAfF0ojU3CqPd-3LXS8
 }
 
 settings {
