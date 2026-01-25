@@ -27,7 +27,13 @@ app.get("/", debug, logger("requests.log"), (req, res) => {
 
 // TODO: Update so that it only returns products for the logged in user 
 app.get("/products", auth.auth, (req, res) => {
-    res.json(products);
+    if(req.user.role === "user") {
+        const userProducts = products.filter(p => p.userId === req.user.id);
+        res.json(userProducts);
+    }
+     else {
+        res.json(products);
+     }
 });
 
 // Login
