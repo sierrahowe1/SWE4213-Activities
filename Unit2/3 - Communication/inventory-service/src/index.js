@@ -60,13 +60,13 @@ async function main() {
   const channel = await connection.createChannel();
   await channel.assertQueue("order.placed", { durable: false });
 
-  // TODO (Part 3): Consume messages from the "order.placed" queue.
-  // When a message arrives:
-  //   1. Parse the message content from JSON
-  //   2. Log the received order (e.g. "New order received: ...")
-  //   3. Acknowledge the message with channel.ack(msg)
-  //
-  // Hint: channel.consume("order.placed", (msg) => { ... })
+  channel.consume("order.placed", (msg) => {
+    if (msg !== null) {
+      const order = JSON.parse(msg.content.toString());
+      console.log(`New order received: ${JSON.stringify(order)}`);
+      channel.ack(msg);
+    }
+  })
 
   app.listen(PORT, () => {
     console.log(`Inventory service running on port ${PORT}`);

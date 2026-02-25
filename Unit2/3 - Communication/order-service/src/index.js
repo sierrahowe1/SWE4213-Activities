@@ -54,7 +54,7 @@ app.post("/orders", async (req, res) => {
 
     channel.sendToQueue("order.placed", Buffer.from(JSON.stringify(order)));
 
-    console.log("Published event to order.placed queue:", order);
+    console.log(`Published event to order.placed for order : ${order.id}`);
 
     res.status(201).json(order);
   } catch (err) {
