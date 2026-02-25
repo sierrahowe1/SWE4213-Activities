@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../../SWE4213-Activities"
+		},
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}
