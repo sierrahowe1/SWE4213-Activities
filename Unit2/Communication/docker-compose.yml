@@ -8,7 +8,7 @@ services:
     restart: "no"
 
   
-   inventory-service:
+  inventory-service:
      image: inventory-service
      build:
        context: ./inventory-service
@@ -22,7 +22,7 @@ services:
      restart: "no"
 
   
-   order-service:
+  order-service:
      image: order-service
      build:
        context: ./order-service
@@ -32,7 +32,7 @@ services:
        - "3001:3001"
      environment:
        - PORT=3001
-       - INVENTORY_URL=http://inventory-service:3000
+       - INVENTORY_URL=http://inventory-service:300
        - RABBITMQ_URL=amqp://rabbitmq
      depends_on:
        - rabbitmq
