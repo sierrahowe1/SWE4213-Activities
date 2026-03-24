@@ -1,0 +1,13 @@
+{
+  "name": "hello-kubernetes",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "description": "Hello World Express app for Kubernetes demo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

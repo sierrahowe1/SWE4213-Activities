@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-kubernetes
+  labels:
+    app: hello-kubernetes
+spec:
+  containers:
+    - name: hello-kubernetes
+      image: hello-kubernetes:latest
+      imagePullPolicy: Never
+      ports:
+        - containerPort: 3000
+      env:
+        - name: PORT
+          value: "3000"
