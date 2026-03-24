@@ -1,0 +1,26 @@
+services:
+  catalog:
+    image: catalog
+    build:
+      context: ./catalog
+      dockerfile: Dockerfile
+    container_name: catalog
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+    restart: "no"
+
+  # TODO: Add your gateway service here
+   gateway:
+     image: gateway
+     build:
+       context: ./gateway
+       dockerfile: Dockerfile
+     container_name: gateway
+     ports:
+       - "4002:4002"
+     environment:
+       - PORT=4002
+       - CATALOG_URL=http://catalog:4000
+     restart: "no"
