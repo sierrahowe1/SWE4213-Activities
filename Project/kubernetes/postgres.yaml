@@ -1,0 +1,71 @@
+# PersistentVolumeClaim: requests storage from the cluster so postgres data
+# survives pod restarts. Without this, data is lost whenever the pod is recreated.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc # Name of the volume 
+spec:
+  accessModes:
+    - ReadWriteOnce  # Only one pod can mount this volume at a time
+  resources:
+    requests:
+      storage: 1Gi  # Amount of storage requested by the volume 
+---
+apiVersion: apps/v1
+kind: Deployment  # High level abstraction for managing pods
+metadata:
+  name: db
+spec:
+  replicas: 1  # Only one postgres instance (multiple replicas require more complex clustering)
+  selector:    # Selector defines how the Deployment finds which Pods to manage
+    matchLabels:
+      app: db  # Deployment manages pods that have this label
+  template:    # Template defines the pods created by the Deployment
+    metadata:
+      labels:
+        app: db  # Label applied to each pod — must match selector above and Service selector below
+    spec:
+      containers:
+        - name: db
+          image: postgres:16 # Official postgres image from Docker Hub
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials  # Pull value from the Secret instead of hardcoding it
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              value: postgres  # Default database created on startup
+          volumeMounts: # Where the mounted volumes should appear inside the container 
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data  # Where postgres stores its data files
+            - name: db-init
+              mountPath: /docker-entrypoint-initdb.d  # Postgres runs .sql files here on first startup
+      volumes:
+        - name: postgres-data # Mounts the volumes defined below into the container's filesystem
+          persistentVolumeClaim:
+            claimName: postgres-pvc  # Binds this volume to the PVC defined above
+        - name: db-init
+          configMap:
+            name: db-init-scripts  # Mounts the SQL scripts from the ConfigMap as files
+---
+# Service: gives the postgres pod a stable DNS name ("db") so other services
+# can connect using the hostname "db" — e.g. postgresql://user:password@db:5432/videos
+# Cluster IP by default (no external port defined)
+apiVersion: v1
+kind: Service
+metadata:
+  name: db  # This becomes the hostname other pods use to reach postgres
+spec:
+  selector:
+    app: db  # Routes traffic to pods with this label
+  ports:
+    - port: 5432       # Port the Service listens on (what other pods connect to)
+      targetPort: 5432 # Port on the pod to forward traffic to

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: VIDEO_STREAMING_URL
+              value: http://video-streaming:4001  # "video-streaming" resolves via its ClusterIP Service
+---
+# Service: exposes the gateway externally via LoadBalancer.
+# In a cloud environment this provisions a cloud load balancer with a public IP.
+# In minikube/kind, use "minikube service gateway" or "kubectl port-forward" to reach it locally.
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+spec:
+  type: LoadBalancer # This is important. This exposes port 3000 externally. 
+  selector:
+    app: gateway
+  ports:
+    - port: 3000
+      targetPort: 3000

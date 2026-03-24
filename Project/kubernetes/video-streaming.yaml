@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video-streaming
+spec:
+  replicas: 3  # Multiple replicas — the Service load balances across all of them
+  selector:
+    matchLabels:
+      app: video-streaming
+  template:
+    metadata:
+      labels:
+        app: video-streaming
+    spec:
+      containers:
+        - name: video-streaming
+          image: video-streaming:latest
+          imagePullPolicy: IfNotPresent  # Use locally built image rather than pulling from a registry
+          ports:
+            - containerPort: 4001
+          env:
+            - name: PORT
+              value: "4001"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_PASSWORD
+            - name: DB_URL
+              value: postgresql://$(DB_USER):$(DB_PASSWORD)@db:5432/videos  # $(VAR) is substituted by Kubernetes from the env vars defined above
+            - name: VIDEO_STORAGE_URL
+              value: http://video-storage:4000  # "video-storage" resolves via its Service
+            - name: HISTORY_URL
+              value: http://history:5000        # "history" resolves via its Service
+            - name: RABBITMQ_URL
+              value: amqp://rabbitmq            # "rabbitmq" resolves via its Service
+---
+# Service: ClusterIP — internal only. External traffic reaches video-streaming
+# through the gateway service, which is the sole LoadBalancer entry point.
+apiVersion: v1
+kind: Service
+metadata:
+  name: video-streaming
+spec:
+  type: ClusterIP
+  selector:
+    app: video-streaming
+  ports:
+    - port: 4001        # Port the Service listens on inside the cluster
+      targetPort: 4001  # Port on the pod to forward traffic to

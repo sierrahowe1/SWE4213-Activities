@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:  # Selector defines how the Deployment finds which Pods to manage
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata: # Template defines the pods created by the Deployment
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3-management  # Includes the web management UI on port 15672
+          ports:
+            - containerPort: 5672   # AMQP protocol — used by services to send/receive messages
+            - containerPort: 15672  # Management UI — browse queues and messages in a browser
+---
+# Service: gives rabbitmq a stable DNS name so services can connect via amqp://rabbitmq
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq  # Hostname other pods use — matches RABBITMQ_URL=amqp://rabbitmq
+spec:
+  selector:
+    app: rabbitmq
+  ports: # When a service has more than one port Kubernetes requires us to name them. 
+    - name: amqp
+      port: 5672
+      targetPort: 5672
+    - name: management
+      port: 15672
+      targetPort: 15672

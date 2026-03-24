@@ -1,0 +1,84 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: "no"
+
+  db:
+    image: postgres:16
+    container_name: db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d
+    restart: "no"
+
+  video-storage:
+    image: video-storage
+    build:
+      context: ./video-storage
+      dockerfile: Dockerfile
+    container_name: video-storage
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+    restart: "no"
+
+  history:
+    image: history
+    build:
+      context: ./history
+      dockerfile: Dockerfile
+    container_name: history
+    ports:
+      - "5001:5000"
+    environment:
+      - PORT=5000
+      - DB_URL=postgresql://user:password@db:5432/history
+      - RABBITMQ_URL=amqp://rabbitmq
+    depends_on:
+      - db
+      - rabbitmq
+    restart: "no"
+
+  video-service:
+    image: video-streaming
+    build:
+      context: ./video-streaming
+      dockerfile: Dockerfile
+    container_name: video-streaming
+    environment:
+      - PORT=4001
+      - DB_URL=postgresql://user:password@db:5432/videos
+      - VIDEO_STORAGE_URL=http://video-storage:4000
+      - HISTORY_URL=http://history:5000
+      - RABBITMQ_URL=amqp://rabbitmq
+    depends_on:
+      - db
+      - video-storage
+      - history
+      - rabbitmq
+    restart: "no"
+
+  gateway:
+    image: gateway
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - VIDEO_STREAMING_URL=http://video-service:4001
+    depends_on:
+      - video-service
+    restart: "no"

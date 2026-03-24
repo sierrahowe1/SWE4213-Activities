@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video-storage
+spec:
+  replicas: 2  # Multiple replicas — the Service load balances across all of them
+  selector:
+    matchLabels:
+      app: video-storage
+  template:
+    metadata:
+      labels:
+        app: video-storage
+    spec:
+      containers:
+        - name: video-storage
+          image: video-storage:latest
+          imagePullPolicy: IfNotPresent  # Use locally built image rather than pulling from a registry
+          ports:
+            - containerPort: 4000
+          env:
+            - name: PORT
+              value: "4000"
+---
+# Service: gives video-storage a stable hostname so video-streaming can reach it
+# via VIDEO_STORAGE_URL=http://video-storage:4000
+apiVersion: v1
+kind: Service
+metadata:
+  name: video-storage  # Hostname used in VIDEO_STORAGE_URL
+spec:
+  selector:
+    app: video-storage
+  ports:
+    - port: 4000
+      targetPort: 4000

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>error: password authentication failed for user &quot;user&quot;<br> &nbsp; &nbsp;at /usr/src/app/node_modules/pg-pool/index.js:45:11<br> &nbsp; &nbsp;at process.processTicksAndRejections (node:internal/process/task_queues:95:5)<br> &nbsp; &nbsp;at async /usr/src/app/src/index.js:44:18</pre>
+</body>
+</html>
